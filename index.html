@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+  <meta name="viewport" content="width=device-width,user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>web 大字报</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+  <script src="js/run.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <div class="set-box" v-if="!runBox">
+      <!-- 使用说明 -->
+
+      <p class="explain-btn bor-box">
+        <el-button type="primary" icon="el-icon-question" @click="explainDialog = true">使用说明</el-button>
+
+      </p>
+      <p class="textarea-box bor-box">
+        <el-input type="textarea" minlength="3" maxlength="77" @input="textareaChange" placeholder="请输入内容（3-77）" v-model="textarea">
+        </el-input>
+        <span>{{77 - textarea.length}}</span>
+      </p>
+
+      <div class="color-select bor-box">
+        <div>
+          <p class="bor-box bor-box-bottom">请选择字体颜色</p>
+          <el-color-picker @active-change="textColorChange" v-model="textColor"></el-color-picker>
+        </div>
+        <div>
+          <p class="bor-box bor-box-bottom">请选择背景颜色</p>
+          <el-color-picker @active-change="bgColorChange" v-model="bgColor"></el-color-picker>
+        </div>
+      </div>
+
+      <div class="bor-box run-speed">
+        <p class="">设置滚动速度</p>
+        <el-slider :min="minspeed" :max="maxspeed" v-model="speed"></el-slider>
+      </div>
+
+      <div class="bor-box run-speed">
+        <p class="">字体占屏幕宽度的：1/{{fontsizes}}</p>
+        <el-slider :min="minfsize" :max="maxfsize" v-model="fontsizes"></el-slider>
+      </div>
+
+      <p class="explain-btn bor-box">
+        <el-button type="warning" icon="el-icon-setting" @click="moresetDialog = true">模式设置</el-button>
+        <el-button type="success" icon="el-icon-loading" :disabled="begin" @click="runing">开始</el-button>
+      </p>
+
+    </div>
+
+    <div v-else class="run-box" @click="closerunbox">
+      <run-box :runmodel="runmodel" :runtext="textarea" :debugnums="debugnums" :debugnum="debugnum" :fontsizes="fontsizes" :runspeed="speed"
+        :textcolors="textColor" :bgcolors="bgColor"></run-box>
+
+    </div>
+
+    <!-- 向上 -->
+    <div v-if="runBox" :class='{"debugshow": debugshow}' class="debug-box top" @click="debugclicks($event,true)">
+      <h1 class="el-icon-caret-top"></h1>
+    </div>
+    <!-- 向下 -->
+    <div v-if="runBox" :class='{"debugshow": debugshow}' class="debug-box bottom" @click="debugclicks($event,false)">
+      <h1 class="el-icon-caret-bottom"></h1>
+    </div>
+
+    <!-- 向上 -->
+    <div v-if="runBox" :class='{"debugshow": debugshow}' class="debug-box up" @click="debugclick($event,true)">
+      <h1 class="el-icon-caret-right"></h1>
+    </div>
+    <!-- 向下 -->
+    <div v-if="runBox" :class='{"debugshow": debugshow}' class="debug-box down" @click="debugclick($event,false)">
+      <h1 class="el-icon-caret-left"></h1>
+    </div>
+
+    <!-- 弹框 all -->
+    <el-dialog title="Web大字报 V1.0" :visible.sync="explainDialog" width="80%">
+      <p class="explain-text">
+        <i class="el-icon-caret-right"></i> 在文本框里输入想要展示的文字</p>
+      <p class="explain-text">
+        <i class="el-icon-caret-right"></i> 选择文字颜色和背景色</p>
+      <p class="explain-text">
+        <i class="el-icon-caret-right"></i> 选择滚动格式</p>
+      <p class="explain-text">
+        <i class="el-icon-caret-right"></i> 点击开始</p>
+      <p class="explain-text">
+        <i class="el-icon-caret-right"></i> 开始后，可点击画面四角微调</p>
+      <p class="explain-text">
+        <i class="el-icon-caret-right"></i> 点两次中间画面关闭</p>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="explainDialog = false">知道了</el-button>
+      </span>
+    </el-dialog>
+
+    <el-dialog title="更多的设置项" :visible.sync="moresetDialog" width="80%">
+      <div class="set-model-box">
+        <h4>展示设置：</h4>
+        <p>
+          <el-radio v-model="runmodel" label="A">横屏滚动模式</el-radio>
+        </p>
+        <p>
+          <el-radio v-model="runmodel" label="B">竖屏滚动模式</el-radio>
+        </p>
+        <p>
+          <el-radio v-model="runmodel" label="C">横屏单字闪现</el-radio>
+        </p>
+        <p>
+          <el-radio v-model="runmodel" label="D">竖屏单字闪现</el-radio>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="moresetDialog = false">完成</el-button>
+      </span>
+    </el-dialog>
+  </div>
+
+
+
+</body>
+
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="js/index.js"></script>
+
+</html>
